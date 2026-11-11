@@ -1,0 +1,13 @@
+@EndUserText.label: 'Travel Processor'
+define service Z8PM_SD_TRAVEL_APPROVER {
+  expose Z8PM_TRAVEL_APPROVER     as Travel;
+  expose Z8PM_BOOKING_APPROVER    as Booking;
+  expose Z8PM_BOOKSUPPL_APPROVER  as BookSuppl;
+  expose /DMO/I_Agency            as Agency;
+  expose /DMO/I_Customer          as Customer;
+  expose /DMO/I_Connection        as Connection;
+  expose /DMO/I_Overall_Status_VH as OverallStatus;
+  expose /DMO/I_Booking_Status_VH as BookStatus;
+  expose I_Currency               as Currency;
+  expose /DMO/I_Supplement        as Supplement;
+}

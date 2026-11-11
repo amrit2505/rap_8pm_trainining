@@ -1,0 +1,150 @@
+managed ;
+strict ( 2 );
+
+//add draft feature at the BO level
+with draft;
+define behavior for Z8PM_TRAVEL alias Travel
+//telling the Framework to insert data in this DB table for travel request
+implementation in class zbp_8pm_travel unique
+persistent table /dmo/travel_m
+//to handle the locks by Framework so that other user
+//cannot simulatenously edit the same record / instance
+lock master
+total etag LastChangedAt
+authorization master ( instance )
+//give a draft table name
+draft table z8pm_d_travel
+etag master LastChangedAt
+early numbering
+{
+  create ( authorization : global, precheck );
+  update ( precheck );
+  delete;
+  field ( readonly ) TravelId;
+  association _Booking { create(features : instance); with draft; }
+
+
+    //creating a reusable action that we will call from
+        //this determination and from others also in future needed
+    internal action reCalcTotalPrice;
+  //defining a determination for whenever user will change
+  //the booking fee it will be called.
+  determination calculateTotalPrice
+    on modify { field BookingFee, CurrencyCode; }
+
+  //implemeing validation in RAP
+  validation validateHeaderData on save {
+    create;
+        field CustomerId, BeginDate, EndDate;
+  }
+
+  //static feature control
+  field (readonly) CreatedBy, CreatedAt, LastChangedBy,
+        LastChangedAt, TotalPrice;
+
+  field (mandatory) AgencyId, CustomerId, BeginDate,
+            EndDate, OverallStatus, BookingFee, CurrencyCode;
+
+
+  //actions for accept or reject Travel Status
+  action acceptTravel result[1] $self;
+  action rejectTravel result[1] $self;
+
+  //implementing side effects in our RAP
+    side effects {
+        field BookingFee affects field TotalPrice;
+    }
+
+    //adding the draft actions
+    draft determine action Prepare;
+    draft action Edit;
+    draft action Resume;
+    draft action Activate;
+    draft action Discard;
+
+  mapping for /dmo/travel_m {
+       TravelId = travel_id;
+       AgencyId = agency_id;
+       CustomerId = customer_id;
+       BeginDate = begin_date;
+       CurrencyCode = currency_code;
+       TotalPrice = total_price;
+       OverallStatus = overall_status;
+       Description = description;
+       BookingFee = booking_fee;
+       LastChangedBy = last_changed_by;
+       CreatedAt = created_at;
+       CreatedBy = created_by;
+       LastChangedAt = last_changed_at;
+       EndDate = end_date;
+
+  }
+}
+
+define behavior for Z8PM_BOOKING alias Booking
+//make the behavior pool implementation for booking
+implementation in class zbp_8pm_booking unique
+//telling the Framework to insert data in this DB table for booking request
+persistent table /dmo/booking_m
+draft table z8pm_d_book
+lock dependent by _Travel
+authorization dependent by _Travel
+etag master LastChangedAt
+early numbering
+{
+  update;
+  delete;
+  field ( readonly ) TravelId;
+  field ( readonly ) BookingId;
+  association _Travel { with draft; }
+  association _BookSuppl { create; with draft; }
+
+  field (readonly) LastChangedAt;
+  field (mandatory) ConnectionId, CarrierId, CustomerId;
+
+  mapping for /dmo/booking_m {
+        TravelId = travel_id;
+        BookingId = booking_id;
+        ConnectionId = connection_id;
+        CarrierId = carrier_id;
+        CustomerId = customer_id;
+        BookingDate = booking_date;
+        BookingStatus = booking_status;
+        LastChangedAt = last_changed_at;
+        CurrencyCode = currency_code;
+        FlightDate = flight_date;
+        FlightPrice = flight_price;
+  }
+
+}
+
+define behavior for Z8PM_BOOKSUPPL alias BookSuppl
+implementation in class zbp_8pm_booksuppl unique
+//telling the Framework to insert data in this DB table for booksuppl request
+persistent table /dmo/booksuppl_m
+draft table z8pm_d_bookspl
+lock dependent by _Travel
+authorization dependent by _Travel
+etag master LastChangedAt
+{
+  update;
+  delete;
+  field ( readonly ) TravelId, BookingId;
+  field( readonly:update ) BookingSupplementId;
+  association _Travel { with draft; }
+  association _Booking { with draft; }
+
+  field (readonly) LastChangedAt;
+
+  field (mandatory) SupplementId, Price, CurrencyCode;
+
+  mapping for /dmo/booksuppl_m{
+        TravelId = travel_id;
+        BookingSupplementId = booking_supplement_id;
+        SupplementId = supplement_id;
+        CurrencyCode = currency_code;
+        Price = price;
+        BookingId = booking_id;
+        LastChangedAt = last_changed_at;
+  }
+}

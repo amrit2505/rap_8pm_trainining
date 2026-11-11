@@ -1,0 +1,6 @@
+@EndUserText.label: 'Service Definition'
+define service Z8pm_SD_SALES {
+  expose ZC_8pm_SALES_VIEW as SalesCube;
+  expose I_Country         as Country;
+  expose ZC_8PM_CDS_TF     as CDSTf;
+}

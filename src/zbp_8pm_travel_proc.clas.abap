@@ -1,0 +1,5 @@
+CLASS zbp_8pm_travel_proc DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF z8pm_travel_processor.
+ENDCLASS.
+
+CLASS zbp_8pm_travel_proc IMPLEMENTATION.
+ENDCLASS.

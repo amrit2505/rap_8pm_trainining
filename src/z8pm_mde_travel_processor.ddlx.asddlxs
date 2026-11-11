@@ -1,0 +1,139 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: { 
+    typeName: 'Travel',
+    typeNamePlural: 'Travels', //Heading of line item,
+    title: { value: '_Customer.FirstName' },
+    description: { value: '_Agency.EMailAddress' }
+}
+annotate view Z8PM_TRAVEL_PROCESSOR
+    with 
+{
+    @UI.facet: [
+            { 
+                purpose: #HEADER,
+                type: #DATAPOINT_REFERENCE,
+                position: 10,
+                label: 'Flight Price',
+                targetQualifier: 'price_data'
+            },
+            { 
+                purpose: #HEADER,
+                type: #DATAPOINT_REFERENCE,
+                position: 20,
+                label: 'Status',
+                targetQualifier: 'status'
+            },
+            { 
+                purpose: #STANDARD,
+                type: #COLLECTION,
+                position: 10,
+                label: 'Additional Info',
+                id: 'super'
+            },
+            { 
+                purpose: #STANDARD,
+                type: #IDENTIFICATION_REFERENCE,
+                position: 10,
+                label: 'Travel Details',
+                parentId: 'super'
+            },
+            { 
+                purpose: #STANDARD,
+                type: #FIELDGROUP_REFERENCE,
+                position: 20,
+                label: 'Price',
+                parentId: 'super',
+                targetQualifier: 'pricing'
+            },
+            { 
+                purpose: #STANDARD,
+                type: #FIELDGROUP_REFERENCE,
+                position: 30,
+                label: 'Dates',
+                parentId: 'super',
+                targetQualifier: 'dates'
+            },
+            { 
+                purpose: #STANDARD,
+                type: #FIELDGROUP_REFERENCE,
+                position: 40,
+                label: 'Admin Info',
+                parentId: 'super',
+                targetQualifier: 'admin'
+            },
+            { 
+                purpose: #STANDARD,
+                type: #LINEITEM_REFERENCE,
+                position: 20,
+                label: 'Bookings',
+                targetElement: '_Booking'
+            }
+    
+    ]
+    
+    
+    @UI.selectionField: [{ position: 10 }]
+    @UI.lineItem: [{ position: 10 }]
+    @UI.identification: [{ position: 10 }]
+    TravelId;
+    @UI.selectionField: [{ position: 20 }]
+    @UI.lineItem: [{ position: 20 }]
+    @UI.identification: [{ position: 20 }]
+    AgencyId;
+    @UI.selectionField: [{ position: 30 }]
+    @UI.lineItem: [{ position: 30 }]
+    @UI.identification: [{ position: 30 }]
+    CustomerId;
+    @UI.lineItem: [{ position: 40 }]
+    @UI.fieldGroup: [{ position: 10,
+    qualifier: 'dates', label: 'Start Date' }]
+    BeginDate;
+    @UI.fieldGroup: [{ position: 20,
+    qualifier: 'dates', label: 'End Date' }]
+    EndDate;
+    @UI.fieldGroup: [{ position: 10,
+    label: 'Booking Fee', qualifier: 'pricing' }]
+    BookingFee;
+    @UI.selectionField: [{ position: 40 }]
+    @UI.lineItem: [{ position: 50 }]
+    @UI.dataPoint: { qualifier: 'price_data', title: 'Flight Price' }
+    @UI.fieldGroup: [{ position: 20,
+    label: 'Total Price', qualifier: 'pricing' }]
+    TotalPrice;
+    @UI.lineItem: [{ position: 60 }]
+    @UI.fieldGroup: [{ position: 30,
+    label: 'Currency', qualifier: 'pricing' }]
+    CurrencyCode;
+//    Description;
+    @UI.selectionField: [{ position: 50 }]
+    @UI.lineItem: [{ position: 70, criticality: 'StatusColor',
+        importance: #HIGH }]
+    @UI.dataPoint: { qualifier: 'status', title: 'Status',
+        criticality: 'StatusColor' }
+    @UI.fieldGroup: [{ position: 30,
+    qualifier: 'dates', label: 'Travel Status' }]        
+    OverallStatus;
+    @UI.fieldGroup: [{ qualifier: 'admin',
+        label: 'Created By', position: 10 }]
+    CreatedBy;
+    @UI.fieldGroup: [{ qualifier: 'admin',
+        label: 'Created At', position: 20 }]
+    CreatedAt;
+    @UI.fieldGroup: [{ qualifier: 'admin',
+        label: 'Changed By', position: 30 }]
+    LastChangedBy;
+    @UI.fieldGroup: [{ qualifier: 'admin',
+        label: 'Changed At', position: 40 }]
+    LastChangedAt;
+    @UI.lineItem: [{ position: 80, importance: #HIGH }]
+    CO2Tax;
+    @UI.lineItem: [{ position: 90, importance: #HIGH }]
+    dayOfTheFlight;
+    /* Associations */
+//    _Agency;
+//    _Booking;
+//    _Currency;
+//    _Customer;
+//    _OverallStatus;
+    
+}

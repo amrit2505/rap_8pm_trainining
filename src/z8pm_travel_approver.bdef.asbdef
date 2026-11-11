@@ -1,0 +1,43 @@
+projection;
+strict ( 2 );
+use draft;
+
+define behavior for Z8PM_TRAVEL_APPROVER alias Travel
+{
+//  use create;
+  use update;
+//  use delete;
+
+    field (readonly) TravelId, AgencyId,
+        CustomerId, BeginDate, EndDate, TotalPrice,
+            BookingFee, Description, CurrencyCode;
+
+  use action acceptTravel;
+  use action rejectTravel;
+
+  use action Prepare;
+  use action Edit;
+  use action Resume;
+  use action Activate;
+  use action Discard;
+
+  use association _Booking { with draft; }
+}
+
+define behavior for Z8PM_BOOKING_APPROVER alias Booking
+{
+//  use update;
+//  use delete;
+
+  use association _Travel { with draft; }
+  use association _BookSuppl {  with draft; }
+}
+
+define behavior for Z8PM_BOOKSUPPL_APPROVER alias BookSuppl
+{
+//  use update;
+//  use delete;
+
+  use association _Travel { with draft; }
+  use association _Booking { with draft; }
+}
